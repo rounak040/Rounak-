@@ -1,0 +1,93 @@
+// Space Quest: Galactic Adventure
+
+// Initialize game variables
+let player = {
+  name: "",
+  health: 100,
+  score: 0,
+  level: 1,
+  inventory: []
+};
+
+let planets = [
+  { name: "Mercury", distance: 100000, difficulty: 1 },
+  { name: "Venus", distance: 200000, difficulty: 2 },
+  { name: "Earth", distance: 300000, difficulty: 3 },
+  { name: "Mars", distance: 400000, difficulty: 4 },
+  { name: "Jupiter", distance: 500000, difficulty: 5 },
+  { name: "Saturn", distance: 600000, difficulty: 6 },
+  { name: "Uranus", distance: 700000, difficulty: 7 },
+  { name: "Neptune", distance: 800000, difficulty: 8 },
+  { name: "Pluto", distance: 900000, difficulty: 9 }
+];
+
+let currentPlanet = planets[0];
+
+// Define game functions
+function startGame() {
+  player.name = prompt("Enter your name:");
+  console.log("Welcome, " + player.name + "!");
+
+  travel();
+}
+
+function travel() {
+  console.log("Current planet: " + currentPlanet.name);
+  console.log("Distance to " + currentPlanet.name + ": " + currentPlanet.distance);
+
+  let choice = prompt("Do you want to travel to another planet? (Y/N)");
+
+  if (choice === "Y") {
+    let index = Math.floor(Math.random() * planets.length);
+    currentPlanet = planets[index];
+
+    console.log("Traveling to " + currentPlanet.name + "...");
+    console.log("You have arrived at " + currentPlanet.name + "!");
+    encounter();
+  } else {
+    console.log("Thanks for playing!");
+  }
+}
+
+function encounter() {
+  console.log("Encountering enemies on " + currentPlanet.name + "...");
+
+  let enemy = {
+    name: "Alien",
+    health: currentPlanet.difficulty * 10,
+    strength: currentPlanet.difficulty * 2,
+    loot: ["Energy Crystal", "Power Core"]
+  };
+
+  console.log("You have encountered a " + enemy.name + " with " + enemy.health + " health and " + enemy.strength + " strength!");
+
+  let attack = prompt("Do you want to attack the enemy? (Y/N)");
+
+  if (attack === "Y") {
+    let damage = Math.floor(Math.random() * player.strength);
+    enemy.health -= damage;
+
+    console.log("You dealt " + damage + " damage to the enemy!");
+    console.log("Enemy health: " + enemy.health);
+
+    if (enemy.health <= 0) {
+      console.log("Congratulations! You have defeated the enemy!");
+      player.score += currentPlanet.difficulty * 100;
+      player.inventory.push(enemy.loot[0]);
+      player.inventory.push(enemy.loot[1]);
+      levelUp();
+    } else {
+      console.log("The enemy retaliates with " + enemy.strength + " strength!");
+      player.health -= enemy.strength;
+
+      console.log("You took " + enemy.strength + " damage!");
+      console.log("Your health: " + player.health);
+
+      if (player.health <= 0) {
+        console.log("Game over! You have been defeated by the enemy.");
+        console.log("Final score: " + player.score);
+        console.log("Inventory: " + player.inventory);
+      } else {
+        encounter();
+      }
+    }
